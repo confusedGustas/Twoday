@@ -1,11 +1,9 @@
 package org.twoday.vibe.coding.user.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.twoday.vibe.coding.auth.service.authentication.AuthenticationService;
 import org.twoday.vibe.coding.user.dao.UserDao;
-import org.twoday.vibe.coding.user.dto.ChangePasswordRequestDto;
 import org.twoday.vibe.coding.user.dto.UserResponseDto;
 import org.twoday.vibe.coding.user.entity.User;
 
@@ -17,7 +15,6 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
-    private final PasswordEncoder passwordEncoder;
     private final AuthenticationService authenticationService;
 
     @Override
