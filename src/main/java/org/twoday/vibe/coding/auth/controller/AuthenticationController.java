@@ -3,10 +3,7 @@ package org.twoday.vibe.coding.auth.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.twoday.vibe.coding.auth.dto.LoginRequestDto;
 import org.twoday.vibe.coding.auth.dto.LoginResponseDto;
 import org.twoday.vibe.coding.auth.dto.RegisterRequestDto;
@@ -19,15 +16,15 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
-        authenticationService.register(registerRequestDto);
+    @PostMapping("/login")
+    public ResponseEntity<Void> initiateLogin(@Valid @RequestBody LoginRequestDto loginRequestDto) {
+        authenticationService.initiateLogin(loginRequestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDto) {
-        return ResponseEntity.ok(authenticationService.login(loginRequestDto));
+    @GetMapping("/verify")
+    public ResponseEntity<LoginResponseDto> verifyEmail(@RequestParam String token) {
+        return ResponseEntity.ok(authenticationService.verifyEmail(token));
     }
 
 }

@@ -25,12 +25,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         if(user == null) {
             throw new EntityNotFoundException("User cannot be null");
         }
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .birthDate(user.getBirthDate())
                 .build();
     }
 
@@ -48,7 +47,6 @@ public class UserServiceImpl implements UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .birthDate(user.getBirthDate())
                 .build();
     }
 

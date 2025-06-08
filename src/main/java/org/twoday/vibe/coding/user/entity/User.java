@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +28,7 @@ public class User implements UserDetails {
 
     private String email;
 
-    private String password;
-
-    private LocalDate birthDate;
+    private boolean verified;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -60,12 +57,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return verified;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return null;
     }
-
 }

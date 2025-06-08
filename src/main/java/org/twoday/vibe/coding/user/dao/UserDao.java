@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface UserDao {
 
     Optional<User> findByEmail(String email);
-    void saveUser(User user);
+    User saveUser(User user);
     Optional<User> findById(UUID id);
 
 }

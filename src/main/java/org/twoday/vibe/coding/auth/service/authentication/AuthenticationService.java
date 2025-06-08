@@ -2,52 +2,65 @@ package org.twoday.vibe.coding.auth.service.authentication;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.twoday.vibe.coding.auth.dto.LoginRequestDto;
 import org.twoday.vibe.coding.auth.dto.LoginResponseDto;
-import org.twoday.vibe.coding.auth.dto.RegisterRequestDto;
-import org.twoday.vibe.coding.auth.mapper.AuthenticationMapper;
+import org.twoday.vibe.coding.auth.service.email.EmailVerificationService;
 import org.twoday.vibe.coding.auth.service.jwt.JwtService;
 import org.twoday.vibe.coding.user.dao.UserDao;
 import org.twoday.vibe.coding.user.entity.User;
+
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class AuthenticationService {
 
-    private static final String YOU_ARE_NOT_AUTHORIZED_TO_PERFORM_THIS_ACTION = "You are not authorized to perform this action";
-
     private final UserDao userDao;
-    private final AuthenticationMapper authenticationMapper;
-    private final AuthenticationManager authenticationManager;
+    private final EmailVerificationService emailVerificationService;
     private final JwtService jwtService;
 
-    public void register(RegisterRequestDto registerRequestDto) {
-        var existingUser = userDao.findByEmail(registerRequestDto.getEmail());
-
-        if (existingUser.isPresent()) {
-            throw new EntityNotFoundException("User already exists");
+    public void initiateLogin(LoginRequestDto loginRequestDto) {
+        if (!emailVerificationService.isValidEmailFormat(loginRequestDto.getEmail())) {
+            throw new IllegalArgumentException("Invalid email format. Must be name.surname@twoday.com");
         }
 
-        userDao.saveUser(authenticationMapper.toUser(registerRequestDto));
+        User user = userDao.findByEmail(loginRequestDto.getEmail())
+                .orElseGet(() -> createNewUser(loginRequestDto.getEmail()));
+
+        String verificationToken = UUID.randomUUID().toString();
+        emailVerificationService.sendVerificationEmail(user, verificationToken);
     }
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword()));
+    public LoginResponseDto verifyEmail(String token) {
+        String email = emailVerificationService.getEmailForToken(token);
+        if (email == null) {
+            throw new EntityNotFoundException("Invalid or expired verification token");
+        }
 
-        var user = userDao.findByEmail(loginRequestDto.getEmail())
+        User user = userDao.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        var jwtToken = jwtService.generateToken(user);
+        user.setVerified(true);
+        userDao.saveUser(user);
 
+        String jwtToken = jwtService.generateToken(user);
         return LoginResponseDto.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    private User createNewUser(String email) {
+        String[] nameParts = email.split("@")[0].split("\\.");
+        User newUser = User.builder()
+                .email(email)
+                .firstName(nameParts[0])
+                .lastName(nameParts[1])
+                .verified(false)
+                .build();
+        return userDao.saveUser(newUser);
     }
 
     public User getAuthenticatedUser() {
@@ -64,5 +77,4 @@ public class AuthenticationService {
 
         return user;
     }
-
 }
