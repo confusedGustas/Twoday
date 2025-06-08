@@ -3,7 +3,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="004" author="twoday">
         <insert tableName="users">
@@ -66,7 +66,7 @@
             <column name="last_name" value="zar"/>
             <column name="email" value="witalik.zar@gmail.com"/>
             <column name="verified" valueBoolean="true"/>
-            <column name="role" value="COMITTEE_LEADER"/>
+            <column name="role" value="COMMITTEE_LEAD"/>
         </insert>
 
     </changeSet>

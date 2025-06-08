@@ -11,11 +11,14 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.twoday.vibe.coding.vision.dto.TaxReturnRequest;
 import org.twoday.vibe.coding.vision.dto.TaxReturnResponse;
 import org.twoday.vibe.coding.vision.enums.TaxReturnStatus;
+import org.twoday.vibe.coding.vision.service.ExcelExportService;
 import org.twoday.vibe.coding.vision.service.TaxReturnService;
 
 import java.time.LocalDateTime;
@@ -30,6 +33,9 @@ public class TaxReturnController {
 
     @Autowired
     private TaxReturnService taxReturnService;
+
+    @Autowired
+    private ExcelExportService excelExportService;
 
     @PostMapping
     @Operation(summary = "Create a tax return form", 
@@ -168,6 +174,28 @@ public class TaxReturnController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error updating tax return status: ", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @GetMapping("/export/approved")
+    @Operation(summary = "Export approved tax returns to Excel", 
+               description = "Download approved tax returns as an Excel file")
+    @ApiResponse(responseCode = "200", description = "Excel file generated successfully")
+    public ResponseEntity<byte[]> exportApprovedTaxReturnsToExcel() {
+        try {
+            List<TaxReturnResponse> approvedTaxReturns = taxReturnService.getTaxReturnsByStatus(TaxReturnStatus.APPROVED);
+            byte[] excelFile = excelExportService.exportTaxReturnsToExcel(approvedTaxReturns);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "approved_tax_returns.xlsx");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(excelFile);
+        } catch (Exception e) {
+            log.error("Error exporting tax returns to Excel: ", e);
             return ResponseEntity.internalServerError().build();
         }
     }
