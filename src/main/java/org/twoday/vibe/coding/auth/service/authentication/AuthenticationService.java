@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.twoday.vibe.coding.auth.dto.LoginRequestDto;
+import org.twoday.vibe.coding.auth.enums.UserRole;
 import org.twoday.vibe.coding.auth.service.email.EmailVerificationService;
 import org.twoday.vibe.coding.user.dao.UserDao;
 import org.twoday.vibe.coding.user.entity.User;
@@ -35,6 +36,7 @@ public class AuthenticationService {
                 .firstName(nameParts[0])
                 .lastName(nameParts[1])
                 .verified(true)
+                .role(UserRole.USER)
                 .build();
         return userDao.saveUser(newUser);
     }
