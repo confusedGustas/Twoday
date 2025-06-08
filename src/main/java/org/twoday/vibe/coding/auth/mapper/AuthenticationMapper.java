@@ -15,10 +15,8 @@ public class AuthenticationMapper {
     public User toUser(RegisterRequestDto registerRequest) {
         return User.builder()
                 .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .firstName(registerRequest.getName())
                 .lastName(registerRequest.getSurname())
-                .birthDate(registerRequest.getBirthDate())
                 .build();
     }
 
