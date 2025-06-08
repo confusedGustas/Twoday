@@ -21,7 +21,7 @@
             <column name="last_name" value="Gaigalas"/>
             <column name="email" value="gustas.gaigalas@twoday.com"/>
             <column name="verified" valueBoolean="true"/>
-            <column name="role" value="ADMIN"/>
+            <column name="role" value="COACH"/>
         </insert>
 
         <insert tableName="users">
@@ -30,7 +30,7 @@
             <column name="last_name" value="Skuodziunas"/>
             <column name="email" value="dominykas.skuodziuna@twoday.com"/>
             <column name="verified" valueBoolean="true"/>
-            <column name="role" value="ADMIN"/>
+            <column name="role" value="DIRECTOR"/>
         </insert>
 
         <insert tableName="users">
@@ -40,6 +40,15 @@
             <column name="email" value="main.witalik.zar@gmail.com"/>
             <column name="verified" valueBoolean="true"/>
             <column name="role" value="DIRECTOR"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="first_name" value="witalik"/>
+            <column name="last_name" value="zar"/>
+            <column name="email" value="vitalij.zarscikov@twoday.com"/>
+            <column name="verified" valueBoolean="true"/>
+            <column name="role" value="USER"/>
         </insert>
 
         <insert tableName="users">
