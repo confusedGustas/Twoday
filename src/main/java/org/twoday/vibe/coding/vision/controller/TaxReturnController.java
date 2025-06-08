@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.twoday.vibe.coding.vision.dto.TaxReturnRequest;
 import org.twoday.vibe.coding.vision.dto.TaxReturnResponse;
@@ -196,6 +197,49 @@ public class TaxReturnController {
                     .body(excelFile);
         } catch (Exception e) {
             log.error("Error exporting tax returns to Excel: ", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/{id}/approve")
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'COMMITTEE_LEAD', 'COACH')")
+    @Operation(summary = "Approve a tax return", 
+               description = "Approve a tax return based on user role and approval type")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tax return approved successfully"),
+        @ApiResponse(responseCode = "403", description = "User not authorized to approve this tax return"),
+        @ApiResponse(responseCode = "404", description = "Tax return not found"),
+        @ApiResponse(responseCode = "400", description = "Invalid approval request")
+    })
+    public ResponseEntity<TaxReturnResponse> approveTaxReturn(
+            @Parameter(description = "Tax return ID", required = true) @PathVariable Long id,
+            @Parameter(description = "Approval notes", required = false) @RequestParam(required = false) String notes) {
+        try {
+            TaxReturnResponse response = taxReturnService.approveTaxReturn(id, notes);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error approving tax return: ", e);
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/{id}/reject")
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'COMMITTEE_LEAD', 'COACH')")
+    @Operation(summary = "Reject a tax return", 
+               description = "Reject a tax return with optional rejection reason")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Tax return rejected successfully"),
+        @ApiResponse(responseCode = "403", description = "User not authorized to reject this tax return"),
+        @ApiResponse(responseCode = "404", description = "Tax return not found")
+    })
+    public ResponseEntity<TaxReturnResponse> rejectTaxReturn(
+            @Parameter(description = "Tax return ID", required = true) @PathVariable Long id,
+            @Parameter(description = "Rejection reason", required = true) @RequestParam String reason) {
+        try {
+            TaxReturnResponse response = taxReturnService.rejectTaxReturn(id, reason);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error rejecting tax return: ", e);
             return ResponseEntity.internalServerError().build();
         }
     }

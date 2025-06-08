@@ -2,8 +2,12 @@ package org.twoday.vibe.coding.vision.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.twoday.vibe.coding.auth.enums.UserRole;
 import org.twoday.vibe.coding.vision.dto.TaxReturnRequest;
 import org.twoday.vibe.coding.vision.dto.TaxReturnResponse;
 import org.twoday.vibe.coding.vision.entity.TaxReturn;
@@ -127,6 +131,81 @@ public class TaxReturnService {
 
         log.info("Tax return {} status updated to: {}", id, status);
         return mapToResponse(taxReturn);
+    }
+
+    public TaxReturnResponse approveTaxReturn(Long id, String notes) {
+        Optional<TaxReturn> taxReturnOpt = taxReturnRepository.findById(id);
+        if (taxReturnOpt.isEmpty()) {
+            throw new RuntimeException("Tax return not found with ID: " + id);
+        }
+
+        TaxReturn taxReturn = taxReturnOpt.get();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRole userRole = UserRole.valueOf(auth.getAuthorities().iterator().next().getAuthority());
+
+        // Validate if user can approve based on role and approval type
+        if (!canApproveTaxReturn(taxReturn, userRole)) {
+            throw new AccessDeniedException("User not authorized to approve this tax return");
+        }
+
+        // Update status and notes
+        taxReturn.setStatus(TaxReturnStatus.APPROVED);
+        if (notes != null && !notes.trim().isEmpty()) {
+            taxReturn.setNotes(notes);
+        }
+        taxReturn.setUpdatedAt(LocalDateTime.now());
+        taxReturn = taxReturnRepository.save(taxReturn);
+
+        log.info("Tax return {} approved by {} with role {}", id, auth.getName(), userRole);
+        return mapToResponse(taxReturn);
+    }
+
+    public TaxReturnResponse rejectTaxReturn(Long id, String reason) {
+        Optional<TaxReturn> taxReturnOpt = taxReturnRepository.findById(id);
+        if (taxReturnOpt.isEmpty()) {
+            throw new RuntimeException("Tax return not found with ID: " + id);
+        }
+
+        TaxReturn taxReturn = taxReturnOpt.get();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserRole userRole = UserRole.valueOf(auth.getAuthorities().iterator().next().getAuthority());
+
+        // Validate if user can reject based on role and approval type
+        if (!canApproveTaxReturn(taxReturn, userRole)) {
+            throw new AccessDeniedException("User not authorized to reject this tax return");
+        }
+
+        // Update status and notes
+        taxReturn.setStatus(TaxReturnStatus.REJECTED);
+        taxReturn.setNotes(reason);
+        taxReturn.setUpdatedAt(LocalDateTime.now());
+        taxReturn = taxReturnRepository.save(taxReturn);
+
+        log.info("Tax return {} rejected by {} with role {}", id, auth.getName(), userRole);
+        return mapToResponse(taxReturn);
+    }
+
+    private boolean canApproveTaxReturn(TaxReturn taxReturn, UserRole userRole) {
+        ApprovalType finalApprovalType = taxReturn.getFinalApprovalType();
+        boolean requiresDirectorApproval = taxReturn.getRequiresDirectorApproval();
+
+        // Director can approve anything
+        if (userRole == UserRole.DIRECTOR) {
+            return true;
+        }
+
+        // Committee lead can approve committee approvals
+        if (userRole == UserRole.COMMITTEE_LEAD) {
+            return finalApprovalType == ApprovalType.COMITET || 
+                   finalApprovalType == ApprovalType.COMITET_DIRECTOR;
+        }
+
+        // Coach can only approve basic approvals
+        if (userRole == UserRole.COACH) {
+            return finalApprovalType == ApprovalType.BASIC;
+        }
+
+        return false;
     }
 
     private ApprovalType calculateFinalApprovalType(BigDecimal totalAmount, ApprovalType userSelectedApproval) {
