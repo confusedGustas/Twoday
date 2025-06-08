@@ -19,8 +19,6 @@ import org.twoday.vibe.coding.user.entity.User;
 @AllArgsConstructor
 public class AuthenticationService {
 
-    private static final String YOU_ARE_NOT_AUTHORIZED_TO_PERFORM_THIS_ACTION = "You are not authorized to perform this action";
-
     private final UserDao userDao;
     private final AuthenticationMapper authenticationMapper;
     private final AuthenticationManager authenticationManager;

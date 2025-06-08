@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="001-create-uploaded-documents-table" author="system">
+        <createTable tableName="uploaded_documents">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="original_filename" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="file_size" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_data" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+            <column name="supplier_name" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="total_amount" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="purchase_date" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="full_extracted_text" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="processing_status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_message" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="uploaded_documents" indexName="idx_uploaded_documents_processing_status">
+            <column name="processing_status"/>
+        </createIndex>
+
+        <createIndex tableName="uploaded_documents" indexName="idx_uploaded_documents_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <createIndex tableName="uploaded_documents" indexName="idx_uploaded_documents_supplier_name">
+            <column name="supplier_name"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog> 

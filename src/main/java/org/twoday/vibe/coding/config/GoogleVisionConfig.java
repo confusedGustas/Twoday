@@ -1,4 +1,4 @@
-package org.twoday.vibe.coding;
+package org.twoday.vibe.coding.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.vision.v1.ImageAnnotatorClient;

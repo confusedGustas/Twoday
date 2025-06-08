@@ -1,4 +1,4 @@
-package org.twoday.vibe.coding;
+package org.twoday.vibe.coding.vision.service;
 
 import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
@@ -56,6 +56,7 @@ public class GoogleVisionService {
             }
             
             result.put("invoiceData", invoiceDataExtractor.extractInvoiceData(fullText));
+            result.put("fullText", fullText);
         }
 
         return result;
@@ -94,6 +95,7 @@ public class GoogleVisionService {
             }
             
             result.put("invoiceData", invoiceDataExtractor.extractInvoiceData(fullText));
+            result.put("fullText", fullText);
         }
 
         return result;

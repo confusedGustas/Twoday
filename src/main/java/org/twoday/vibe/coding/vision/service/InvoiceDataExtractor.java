@@ -1,4 +1,4 @@
-package org.twoday.vibe.coding;
+package org.twoday.vibe.coding.vision.service;
 
 import org.springframework.stereotype.Service;
 
