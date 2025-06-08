@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(
-                                        "/auth/**")
+                                        "/auth/**",
+                                        "/api/vision/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
