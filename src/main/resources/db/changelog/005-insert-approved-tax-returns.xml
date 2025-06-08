@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="005-insert-approved-tax-returns" author="system">
+        <!-- Insert a document first -->
+        <insert tableName="uploaded_documents">
+            <column name="original_filename" value="invoice1.pdf"/>
+            <column name="content_type" value="application/pdf"/>
+            <column name="file_size" valueNumeric="1024"/>
+            <column name="image_data" value="0x"/>
+            <column name="supplier_name" value="MAXIMA LT"/>
+            <column name="total_amount" value="150.00"/>
+            <column name="purchase_date" value="2024-03-20"/>
+            <column name="processing_status" value="COMPLETED"/>
+            <column name="created_at" valueDate="2024-03-20T10:00:00"/>
+            <column name="updated_at" valueDate="2024-03-20T10:00:00"/>
+        </insert>
+
+        <!-- Insert approved tax return -->
+        <insert tableName="tax_returns">
+            <column name="document_id" valueNumeric="1"/>
+            <column name="supplier_name" value="MAXIMA LT"/>
+            <column name="total_amount" valueNumeric="150.00"/>
+            <column name="purchase_date" value="2024-03-20"/>
+            <column name="user_selected_approval" value="BASIC"/>
+            <column name="final_approval_type" value="BASIC"/>
+            <column name="requires_director_approval" valueBoolean="false"/>
+            <column name="status" value="APPROVED"/>
+            <column name="notes" value="Approved basic expense"/>
+            <column name="created_at" valueDate="2024-03-20T10:00:00"/>
+            <column name="updated_at" valueDate="2024-03-20T10:00:00"/>
+        </insert>
+
+        <!-- Insert another document -->
+        <insert tableName="uploaded_documents">
+            <column name="original_filename" value="invoice2.pdf"/>
+            <column name="content_type" value="application/pdf"/>
+            <column name="file_size" valueNumeric="1024"/>
+            <column name="image_data" value="0x"/>
+            <column name="supplier_name" value="RIMI LIETUVA"/>
+            <column name="total_amount" value="1200.00"/>
+            <column name="purchase_date" value="2024-03-19"/>
+            <column name="processing_status" value="COMPLETED"/>
+            <column name="created_at" valueDate="2024-03-19T15:30:00"/>
+            <column name="updated_at" valueDate="2024-03-19T15:30:00"/>
+        </insert>
+
+        <!-- Insert another approved tax return with director approval -->
+        <insert tableName="tax_returns">
+            <column name="document_id" valueNumeric="2"/>
+            <column name="supplier_name" value="RIMI LIETUVA"/>
+            <column name="total_amount" valueNumeric="1200.00"/>
+            <column name="purchase_date" value="2024-03-19"/>
+            <column name="user_selected_approval" value="COMITET"/>
+            <column name="final_approval_type" value="COMITET_DIRECTOR"/>
+            <column name="requires_director_approval" valueBoolean="true"/>
+            <column name="status" value="APPROVED"/>
+            <column name="notes" value="Approved by committee and director"/>
+            <column name="created_at" valueDate="2024-03-19T15:30:00"/>
+            <column name="updated_at" valueDate="2024-03-19T15:30:00"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog> 
