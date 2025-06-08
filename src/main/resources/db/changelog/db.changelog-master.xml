@@ -8,5 +8,6 @@
     <include file="db/changelog/001-create-users-table.xml"/>
     <include file="db/changelog/001-create-uploaded-documents-table.xml"/>
     <include file="db/changelog/002-create-tax-returns-table.xml"/>
+    <include file="db/changelog/003-add-role-to-users.xml"/>
 
 </databaseChangeLog> 
