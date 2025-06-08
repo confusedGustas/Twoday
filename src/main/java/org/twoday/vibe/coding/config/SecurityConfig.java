@@ -29,17 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(
-                                        "/auth/**",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs/**",
-                                        "/swagger-resources/**",
-                                        "/search/**",
-                                        "/ws/**",
-                                        "/food/categories",
-                                        "/reviews/average-rating",
-                                        "/food/categories",
-                                        "/reviews/get*",
-                                        "/users/*")
+                                        "/auth/**")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
