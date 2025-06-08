@@ -4,5 +4,6 @@ public enum UserRole {
     USER,
     COACH,
     COMMITTEE_LEAD,
-    DIRECTOR
+    DIRECTOR,
+    ADMIN
 } 

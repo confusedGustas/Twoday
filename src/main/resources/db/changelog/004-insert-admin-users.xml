@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="004" author="twoday">
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="first_name" value="Ugnius"/>
+            <column name="last_name" value="Spokavicius"/>
+            <column name="email" value="ugnius.spokavicius@twoday.com"/>
+            <column name="verified" valueBoolean="true"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="first_name" value="Gustas"/>
+            <column name="last_name" value="Gaigalas"/>
+            <column name="email" value="gustas.gaigalas@twoday.com"/>
+            <column name="verified" valueBoolean="true"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="first_name" value="Dominykas"/>
+            <column name="last_name" value="Skuodziunas"/>
+            <column name="email" value="dominykas.skuodziuna@twoday.com"/>
+            <column name="verified" valueBoolean="true"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog> 

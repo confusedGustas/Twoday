@@ -22,6 +22,9 @@
             <column name="verified" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
+            <column name="role" type="varchar(50)" defaultValue="USER">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createIndex tableName="users" indexName="idx_users_email">
