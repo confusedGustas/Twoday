@@ -16,13 +16,20 @@ import java.util.Map;
 @Service
 public class GoogleVisionService {
 
-    @Autowired
+    @Autowired(required = false)
     private ImageAnnotatorClient imageAnnotatorClient;
 
     @Autowired
     private InvoiceDataExtractor invoiceDataExtractor;
 
     public Map<String, Object> analyzeImage(String imagePath) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (imageAnnotatorClient == null) {
+            result.put("error", "Google Vision API is not configured");
+            return result;
+        }
+        
         byte[] data = Files.readAllBytes(Path.of(imagePath));
         ByteString imgBytes = ByteString.copyFrom(data);
 
@@ -38,8 +45,6 @@ public class GoogleVisionService {
         BatchAnnotateImagesResponse response = imageAnnotatorClient.batchAnnotateImages(requests);
         List<AnnotateImageResponse> responses = response.getResponsesList();
 
-        Map<String, Object> result = new HashMap<>();
-        
         for (AnnotateImageResponse res : responses) {
             if (res.hasError()) {
                 result.put("error", res.getError().getMessage());
@@ -63,6 +68,13 @@ public class GoogleVisionService {
     }
 
     public Map<String, Object> analyzeImageFromBytes(byte[] imageData) {
+        Map<String, Object> result = new HashMap<>();
+        
+        if (imageAnnotatorClient == null) {
+            result.put("error", "Google Vision API is not configured");
+            return result;
+        }
+        
         ByteString imgBytes = ByteString.copyFrom(imageData);
 
         List<AnnotateImageRequest> requests = new ArrayList<>();
@@ -77,8 +89,6 @@ public class GoogleVisionService {
         BatchAnnotateImagesResponse response = imageAnnotatorClient.batchAnnotateImages(requests);
         List<AnnotateImageResponse> responses = response.getResponsesList();
 
-        Map<String, Object> result = new HashMap<>();
-        
         for (AnnotateImageResponse res : responses) {
             if (res.hasError()) {
                 result.put("error", res.getError().getMessage());
