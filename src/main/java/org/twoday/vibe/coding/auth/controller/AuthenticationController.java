@@ -5,13 +5,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.twoday.vibe.coding.auth.dto.LoginRequestDto;
-import org.twoday.vibe.coding.auth.dto.LoginResponseDto;
-import org.twoday.vibe.coding.auth.dto.RegisterRequestDto;
 import org.twoday.vibe.coding.auth.service.authentication.AuthenticationService;
 
 @RequestMapping("/auth")
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -21,10 +20,4 @@ public class AuthenticationController {
         authenticationService.initiateLogin(loginRequestDto);
         return ResponseEntity.ok().build();
     }
-
-    @GetMapping("/verify")
-    public ResponseEntity<LoginResponseDto> verifyEmail(@RequestParam String token) {
-        return ResponseEntity.ok(authenticationService.verifyEmail(token));
-    }
-
 }
